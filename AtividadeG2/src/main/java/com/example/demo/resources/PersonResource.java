@@ -19,6 +19,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.demo.models.Person;
 import com.example.demo.repositories.PersonRepository;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+
+@Api
 @RestController
 @RequestMapping(path="/persons")
 public class PersonResource {
@@ -30,12 +34,14 @@ public class PersonResource {
 		this.personRepository = personRepository;
 	}
 	
+	@ApiOperation("Cadastra pessoas, uma por vez")
 	@PostMapping
 	public ResponseEntity<Person> save(@RequestBody Person person) {
 		personRepository.save(person);
 		return new ResponseEntity<>(person, HttpStatus.OK);
 	}
 	
+	@ApiOperation("Consulta pessoas, retornando uma lista.")
 	@GetMapping
 	public ResponseEntity<List<Person>> getAll(){
 		List<Person> persons = new ArrayList<>();
@@ -43,6 +49,7 @@ public class PersonResource {
 		return new ResponseEntity<>(persons, HttpStatus.OK);
 	}
 	
+	@ApiOperation("Consulta pessoa pelo id.")
 	@GetMapping(path="/{id}")
 	public ResponseEntity<Optional<Person>>getById(@PathVariable Integer id){
 		Optional<Person>person;
@@ -55,6 +62,7 @@ public class PersonResource {
 		}
 		
 	}
+	@ApiOperation("Deleta pessoas, uma por vez.")
 	@DeleteMapping(path="/{id}")
 	public ResponseEntity<Optional<Person>> deletebyId(@PathVariable Integer id){
 		try {
@@ -64,7 +72,7 @@ public class PersonResource {
 			return new ResponseEntity<Optional<Person>>(HttpStatus.NOT_FOUND);
 		}
 	}
-	
+	@ApiOperation("Atualiza os dados de uma pessoa.")
 	@PutMapping(value="/{id}")
 	public ResponseEntity<Person> update(@PathVariable Integer id, @RequestBody Person newPerson){
 		return personRepository.findById(id)
